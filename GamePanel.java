@@ -9,7 +9,7 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 25;
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT_SIZE;
-    final int DELAY = 75;
+    final int DELAY = 100;
     final int x[] = new int[GAME_UNITS];
     final int y[] = new int[GAME_UNITS];
     int bodyParts = 6;
@@ -18,6 +18,7 @@ public class GamePanel extends JPanel implements ActionListener {
     int bugY;
     char direction = 'R';
     boolean running = false;
+    boolean changedDirection = false;
     Timer timer;
     Random random;
     
@@ -64,7 +65,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 }
             }
             g.setColor(Color.red);
-            g.setFont(new Font("Ink Free", Font.BOLD, 40));
+            g.setFont(new Font("Calibri", Font.BOLD, 40));
             FontMetrics metrics = getFontMetrics(g.getFont());
             g.drawString("Score: " + bugsEaten, (SCREEN_WIDTH - metrics.stringWidth("Score: " + bugsEaten)) / 2, g.getFont().getSize());
         }
@@ -76,6 +77,10 @@ public class GamePanel extends JPanel implements ActionListener {
     public void newBug() {
         bugX = random.nextInt(SCREEN_WIDTH / UNIT_SIZE) * UNIT_SIZE;
         bugY = random.nextInt(SCREEN_HEIGHT / UNIT_SIZE) * UNIT_SIZE;
+        for(int i = 0; i < bodyParts; i++) {
+            if(bugX == x[i] && bugY == y[i])
+                newBug();
+        }
     }
 
     public void move() {
@@ -92,6 +97,7 @@ public class GamePanel extends JPanel implements ActionListener {
             break;
             case 'R': x[0] = x[0] + UNIT_SIZE;
         }
+        changedDirection = false;
     }
 
     public void checkBug() {
@@ -127,12 +133,12 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void gameOver(Graphics g) {
         g.setColor(Color.red);
-        g.setFont(new Font("Ink Free", Font.BOLD, 40));
+        g.setFont(new Font("Calibri", Font.BOLD, 40));
         FontMetrics metrics1 = getFontMetrics(g.getFont());
         g.drawString("Score: " + bugsEaten, (SCREEN_WIDTH - metrics1.stringWidth("Score: " + bugsEaten)) / 2, g.getFont().getSize());
 
         g.setColor(Color.red);
-        g.setFont(new Font("Ink Free", Font.BOLD, 75));
+        g.setFont(new Font("Calibri", Font.BOLD, 75));
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         g.drawString("Game Over", (SCREEN_WIDTH - metrics2.stringWidth("Game Over")) / 2, SCREEN_HEIGHT / 2);
     }
@@ -150,27 +156,33 @@ public class GamePanel extends JPanel implements ActionListener {
     public class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            switch(e.getKeyCode()) {
-                case KeyEvent.VK_LEFT: 
-                    if(direction != 'R') {
-                        direction = 'L';
-                    }
-                break;
-                case KeyEvent.VK_RIGHT:
-                    if(direction != 'L') {
-                        direction = 'R';
-                    }
-                break;
-                case KeyEvent.VK_UP:
-                    if(direction != 'D') {
-                        direction = 'U';
-                    }
-                break;
-                case KeyEvent.VK_DOWN:
-                    if(direction != 'U') {
-                        direction = 'D';
-                    }
-                break;
+            if(!changedDirection) {
+                switch(e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT: 
+                        if(direction != 'R') {
+                            direction = 'L';
+                            changedDirection = true;
+                        }
+                    break;
+                    case KeyEvent.VK_RIGHT:
+                        if(direction != 'L') {
+                            direction = 'R';
+                            changedDirection = true;
+                        }
+                    break;
+                    case KeyEvent.VK_UP:
+                        if(direction != 'D') {
+                            direction = 'U';
+                            changedDirection = true;
+                        }
+                    break;
+                    case KeyEvent.VK_DOWN:
+                        if(direction != 'U') {
+                            direction = 'D';
+                            changedDirection = true;
+                        }
+                    break;
+                }
             }
         }
     }
