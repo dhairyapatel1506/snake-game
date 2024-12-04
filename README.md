@@ -5,3 +5,6 @@ Control the snake using the arrow keys. Eat the bugs (in red) to increase your s
 Inspired from the classic _Snake_ game.
 
 # <a href="https://github.com/dhairyapatel1506/snake-game/releases">Download</a>
+
+# ToDo
+<p>☐ Add feature to pause the game.</p>
